@@ -34,7 +34,6 @@ const AddPostForm = () => {
 
                 // definition from the website - The promise returned by the dispatched thunk has an unwrap property which can be called to extract the payload of a fulfilled action or to throw either the error
 
-
                 setTitle('')
                 setContent('')
             } catch(err){
