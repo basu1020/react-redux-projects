@@ -18,14 +18,17 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
         return err.message
     }
 })
-
-export const addNewPost = createAsyncThunk('posts/addNewPost', async ({initialPost}) => {
+ 
+export const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPost) => {
     try{
         const response = await fetch(POSTS_URL, {
             method: 'POST',
+            headers:{
+                'Content-type': 'application/json'
+            },
             body: JSON.stringify(initialPost)
-        })
-        const res = await response.data
+        }) 
+        const res = await response.json()
         return res
     } catch(err){
         return err.message
@@ -96,17 +99,15 @@ const postSlice = createSlice({
             state.error = action.error.message
         })
         builder.addCase(addNewPost.fulfilled, (state, action) => {
-            console.log(action.payload.userId)
-            action.payload.userId = Number(action.payload.userId)
+            console.log(action.payload, "action.payload")
             action.payload.date = new Date().toISOString();
             action.payload.reactions = {
-                thumbsUp: 0,
+                thumbsUp: 0, 
                 wow: 0,
                 heart: 0,
                 rocket: 0,
                 coffee: 0
             }
-            console.log(action.payload)
             state.posts.push(action.payload)
         })
     }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { addNewPost } from './postSlice'
+import { addNewPost, postAdded } from './postSlice'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { selectAllUsers } from '../users/usersSlice'
@@ -8,7 +8,6 @@ const AddPostForm = () => {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const [userId, setUserId] = useState('')
-    const [something, setSomething] = useState('')
     const [addRequestStatus, setAddRequestStatus] = useState('idle')
 
     const users = useSelector(selectAllUsers)
@@ -16,10 +15,9 @@ const AddPostForm = () => {
     const dispatch = useDispatch()
     const onTitleChange = e => setTitle(e.target.value)
     const onContentChange = e => setContent(e.target.value)
-    const onAuthorIdChange = (e) => {
-        console.log(userId)
+    const onAuthorIdChange = e => {
         setUserId(e.target.value)
-        console.log(userId)
+        console.log(e.target.value, userId)
     }
     const canSave = [title, content, userId].every(Boolean) && addRequestStatus === 'idle';
 
@@ -27,8 +25,8 @@ const AddPostForm = () => {
         if (canSave) {
             try {
                 setAddRequestStatus('pending')
-                console.log(userId)
-                dispatch(addNewPost({title, body:content, userId})).unwrap()
+                console.log(userId, content, title)
+                dispatch(addNewPost({title, body:content, userId}))
 
                 //redux toolkit adds an unwrap function to the returned promise which adds a new promise which returns action.payload or returns an error if action was rejected. 
 
