@@ -101,6 +101,7 @@ const postSlice = createSlice({
         })
         builder.addCase(addNewPost.fulfilled, (state, action) => {
             console.log(action.payload, "action.payload")
+            action.payload.userId = Number(action.payload.userId)
             action.payload.date = new Date().toISOString();
             action.payload.reactions = {
                 thumbsUp: 0, 
