@@ -8,6 +8,7 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
     try {
         const response = await fetch(USERS_URL)
         const data = await response.json()
+        console.log(data)
         return data
     } catch (err) {
         return err.message

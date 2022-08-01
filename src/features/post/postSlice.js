@@ -5,7 +5,7 @@ const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
 
 const initialState = {
     posts: [],
-    status: 'idle',
+    status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null
 }
 
@@ -18,7 +18,7 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
         return err.message
     }
 })
- 
+
 export const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPost) => {
     try{
         const response = await fetch(POSTS_URL, {
@@ -29,6 +29,7 @@ export const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPos
             body: JSON.stringify(initialPost)
         }) 
         const res = await response.json()
+        console.log(res)
         return res
     } catch(err){
         return err.message
@@ -108,6 +109,7 @@ const postSlice = createSlice({
                 rocket: 0,
                 coffee: 0
             }
+            console.log(action.payload)
             state.posts.push(action.payload)
         })
     }
