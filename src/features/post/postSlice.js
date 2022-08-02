@@ -36,6 +36,23 @@ export const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPos
     }
 })
 
+export const changeApost = createAsyncThunk('post/changeApost', async (postId, title, content) => {
+    // const post = await state.post.post.find(post => post.id === postId)
+    // post.title = title
+    // post.content = content
+    // post.userId = userId 
+    const response = await fetch(`${POSTS_URL}/${postId}`, {
+        method: 'PUT',
+        headers:{
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({postId, title, content})
+    }) 
+    const res = await response.json()
+    console.log(res)
+    return res
+})
+
 const postSlice = createSlice({
     name: 'posts',
     initialState,
@@ -113,12 +130,17 @@ const postSlice = createSlice({
             console.log(action.payload)
             state.posts.push(action.payload)
         })
+        builder.addCase(changeApost.fulfilled, (state, action) => {
+            let post = state.posts.find(post => post.id === action.payload.id)
+            console.log(post)
+        })
     }
 })
 
 export const selectAllPosts = (state) => state.posts.posts
 export const getPostsStatus = (state) => state.posts.status
 export const getPostsError = (state) => state.posts.error
+export const selectPostById = (state, postId) => state.posts.posts.find(post => post.id === postId)
 
 export const { postAdded, reactionAdded } = postSlice.actions
 

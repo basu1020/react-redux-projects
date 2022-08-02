@@ -55,12 +55,10 @@ const AddPostForm = () => {
         <section>
             <form>
                 <label htmlFor="postTitle">
-                    <input type="text" id='postTitle' name='postTitle' value={title} onChange={onTitleChange} />
+                    Title:
                 </label>
-                <label htmlFor="postAuthor">Author:</label>
-                <select id="postAuthor" value={userId} onChange={onAuthorIdChange}>
-                    {usersOptions}
-                </select>
+                    <input type="text" id='postTitle' name='postTitle' value={title} onChange={onTitleChange} />
+                
                 <label htmlFor="postContent">
                     Content:
                 </label>
@@ -71,7 +69,12 @@ const AddPostForm = () => {
                     value={content}
                     onChange={onContentChange}
                 />
-                <input type="text" value={"wakanda forever"} name="" id="" readOnly />
+                
+                <label htmlFor="postAuthor">Author:</label>
+                <select id="postAuthor" value={userId} onChange={onAuthorIdChange}>
+                    {usersOptions}
+                </select>
+                {/* <input type="text" value={"wakanda forever"} name="" id="" readOnly /> */}
                 <button
                     type="button"
                     onClick={onSavePostClicked}
