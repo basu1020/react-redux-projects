@@ -4,7 +4,6 @@ import TimeAgo from './TimeAgo'
 import ReactionButtons from './ReactionButtons'
 import { Link } from 'react-router-dom'
 
-
 const PostItem = ({ post }) => {
     return (
         <>
@@ -16,7 +15,7 @@ const PostItem = ({ post }) => {
                     <TimeAgo timestamp={post.date} />
                 </p>
                 <ReactionButtons post={post} />
-                <Link to={`/post/${post.id}`}><p>View Blog</p></Link>
+                <Link to={`/post/${post.id}`}><p>View Posts</p></Link>
             </article>
         </>
     )

@@ -36,23 +36,6 @@ export const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPos
     }
 })
 
-export const changeApost = createAsyncThunk('post/changeApost', async (postId, title, content) => {
-    // const post = await state.post.post.find(post => post.id === postId)
-    // post.title = title
-    // post.content = content
-    // post.userId = userId 
-    const response = await fetch(`${POSTS_URL}/${postId}`, {
-        method: 'PUT',
-        headers:{
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify({postId, title, content})
-    }) 
-    const res = await response.json()
-    console.log(res)
-    return res
-})
-
 const postSlice = createSlice({
     name: 'posts',
     initialState,
@@ -88,6 +71,15 @@ const postSlice = createSlice({
             if (existingPost) {
                 existingPost.reactions[reaction] += 1
             }
+        },
+
+        postEdited(state, action) {
+            const { postId, title, body} = action.payload
+            const existingPost = state.posts.find(post => post.id === postId)
+            if(existingPost) {
+                existingPost.title = title
+                existingPost.body = body
+            }
         }
     },
 
@@ -119,7 +111,7 @@ const postSlice = createSlice({
         builder.addCase(addNewPost.fulfilled, (state, action) => {
             console.log(action.payload, "action.payload")
             action.payload.userId = Number(action.payload.userId)
-            action.payload.date = new Date().toISOString();
+            action.payload.date = new Date().toISOString()
             action.payload.reactions = {
                 thumbsUp: 0, 
                 wow: 0,
@@ -130,10 +122,6 @@ const postSlice = createSlice({
             console.log(action.payload)
             state.posts.push(action.payload)
         })
-        builder.addCase(changeApost.fulfilled, (state, action) => {
-            let post = state.posts.find(post => post.id === action.payload.id)
-            console.log(post)
-        })
     }
 })
 
@@ -142,6 +130,6 @@ export const getPostsStatus = (state) => state.posts.status
 export const getPostsError = (state) => state.posts.error
 export const selectPostById = (state, postId) => state.posts.posts.find(post => post.id === postId)
 
-export const { postAdded, reactionAdded } = postSlice.actions
+export const { postAdded, postEdited, reactionAdded } = postSlice.actions
 
 export default postSlice.reducer

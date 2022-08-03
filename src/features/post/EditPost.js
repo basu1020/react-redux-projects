@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
-import { selectPostById } from './postSlice'
+import { postEdited, selectPostById } from './postSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 import { selectAllUsers } from '../users/usersSlice'
-import { changeApost } from './postSlice'
 
 const EditPost = () => {
     const navigate = useNavigate()
@@ -14,11 +13,18 @@ const EditPost = () => {
     const [content, setcontent] = useState(post.body)
     const canSave = [title, content].every(Boolean)
 
-    const titleChange = e => settitle(e.target.value)
-    const bodyChange = e => setcontent(e.target.value)
+    const titleChange = e => {
+        settitle(e.target.value)
+        console.log(title)
+    }
+    const bodyChange = e => {
+        setcontent(e.target.value)
+        console.log(content)
+    }
 
     const onSubmitChange = () => {
-        dispatch(changeApost(Number(id), title, content))
+        console.log("title before dispatching" , title,"content before dispatching", content)
+        dispatch(postEdited({postId : Number(id), title: String(title), body: String(content)}))
         navigate(`/post/${post.id}`)
     }
 
@@ -28,10 +34,8 @@ const EditPost = () => {
         )
     }
     else {
-        console.log("sayonara")
         return (
             <>
-                <div>Sayonara</div>
                 <section>
                     <form>
                         <label htmlFor='postTitle'>
