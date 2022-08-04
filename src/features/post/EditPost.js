@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { postEdited, selectPostById } from './postSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
-import { selectAllUsers } from '../users/usersSlice'
 
 const EditPost = () => {
     const navigate = useNavigate()
@@ -23,8 +22,7 @@ const EditPost = () => {
     }
 
     const onSubmitChange = () => {
-        console.log("title before dispatching" , title,"content before dispatching", content)
-        dispatch(postEdited({postId : Number(id), title: String(title), body: String(content)}))
+        dispatch(postEdited({ postId: Number(id), title: String(title), body: String(content) }))
         navigate(`/post/${post.id}`)
     }
 
@@ -41,20 +39,23 @@ const EditPost = () => {
                         <label htmlFor='postTitle'>
                             Title:
                         </label>
-                        <input type="text" value={title} onChange={titleChange}/>
+                        <input type="text" value={title} onChange={titleChange} />
                         <label htmlFor="postContent">
                             Content:
                         </label>
-                        <textarea type="text" value={content} onChange={bodyChange}/>
+                        <textarea type="text" value={content} onChange={bodyChange} />
                         <button
                             type='button'
                             onClick={onSubmitChange}
                             disabled={!canSave}
-                        >Save this shit</button>
+                        >Save</button>
+                        <button
+                            onClick={() => {
+                                navigate(`/post/${post.id}`)
+                            }}
+                            type='button'
+                        >Back</button>
                     </form>
-                    <button onClick={() => {
-                        navigate(`/post/${post.id}`)
-                    }}>Back</button>
                 </section>
             </>
         )

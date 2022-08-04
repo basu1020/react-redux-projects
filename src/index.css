@@ -121,6 +121,12 @@ textarea {
   font-style: italic;
 }
 
+.addANewPost{
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+}
+
 .reactionButton {
   margin: 0 0.25em 0 0;
   background: transparent;

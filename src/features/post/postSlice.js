@@ -1,4 +1,4 @@
-import { createSlice, nanoid, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, nanoid, createAsyncThunk, createSelector } from "@reduxjs/toolkit";
 import { sub } from 'date-fns';
 
 const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
@@ -29,7 +29,6 @@ export const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPos
             body: JSON.stringify(initialPost)
         }) 
         const res = await response.json()
-        console.log(res)
         return res
     } catch(err){
         return err.message
@@ -109,7 +108,6 @@ const postSlice = createSlice({
             state.error = action.error.message
         })
         builder.addCase(addNewPost.fulfilled, (state, action) => {
-            console.log(action.payload, "action.payload")
             action.payload.userId = Number(action.payload.userId)
             action.payload.date = new Date().toISOString()
             action.payload.reactions = {
@@ -119,7 +117,6 @@ const postSlice = createSlice({
                 rocket: 0,
                 coffee: 0
             }
-            console.log(action.payload)
             state.posts.push(action.payload)
         })
     }
@@ -129,6 +126,11 @@ export const selectAllPosts = (state) => state.posts.posts
 export const getPostsStatus = (state) => state.posts.status
 export const getPostsError = (state) => state.posts.error
 export const selectPostById = (state, postId) => state.posts.posts.find(post => post.id === postId)
+
+export const selectPostByUser = createSelector(
+    [selectAllPosts, (state, userId) => userId],
+    (posts, userId) => posts.filter(post => post.userId === userId)
+)
 
 export const { postAdded, postEdited, reactionAdded } = postSlice.actions
 
