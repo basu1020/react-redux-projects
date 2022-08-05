@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { selectAllPosts, fetchPosts, getPostsStatus } from '../postSlice'
+import { selectAllPosts, fetchPosts, getPostsStatus, selectPostIds } from '../postSlice'
 import PostItem from './supporting-components/PostItem'
 
 const PostList = () => {
   const dispatch = useDispatch()
-  const posts = useSelector(selectAllPosts)
+  const orderedPostsIds = useSelector(selectPostIds)
   const postStatus = useSelector(getPostsStatus)
-  const orderedPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
   const effectRanThis = useRef(false)
 
   useEffect(() => {
@@ -20,16 +19,15 @@ const PostList = () => {
       effectRanThis.current = true
     }
 
-  }, [posts, dispatch])
-
+  }, [orderedPostsIds, dispatch])
 
   return (
     <section>
       <h2>Posts</h2>
-      <h3>{posts.length}</h3>
+      <h3>{orderedPostsIds.length}</h3>
       <div>
-        {orderedPosts.map(post =>
-          <PostItem post={post} key={post.id} />)}
+        {orderedPostsIds.map(postId =>
+          <PostItem postId={postId} key={postId} />)}
       </div>
     </section>
   )

@@ -4,7 +4,12 @@ import TimeAgo from './TimeAgo'
 import ReactionButtons from './ReactionButtons'
 import { Link } from 'react-router-dom'
 
-const PostItem = ({ post }) => {
+import { useSelector } from 'react-redux'
+import { selectPostById } from '../../postSlice'
+
+const PostItem = ({ postId }) => {
+    const post = useSelector(state => selectPostById(state, postId))
+
     return (
         <>
             <article>

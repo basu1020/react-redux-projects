@@ -1,13 +1,23 @@
-import { createSlice, nanoid, createAsyncThunk, createSelector } from "@reduxjs/toolkit";
+import { 
+    createSlice,
+    nanoid, 
+    createAsyncThunk, 
+    createSelector,
+    createEntityAdapter
+    } from "@reduxjs/toolkit";
 import { sub } from 'date-fns';
 
 const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
 
-const initialState = {
-    posts: [],
+const postAdapter = createEntityAdapter({
+    sortComparer: (a,b) => b.date.localeCompare(a.date)
+})
+
+const initialState = postAdapter.getInitialState({
     status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null
-}
+})
+
 
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
     try {
@@ -66,7 +76,7 @@ const postSlice = createSlice({
 
         reactionAdded(state, action) {
             const { postId, reaction } = action.payload
-            const existingPost = state.posts.find(post => post.id === postId)
+            const existingPost = state.entities[postId]
             if (existingPost) {
                 existingPost.reactions[reaction] += 1
             }
@@ -74,7 +84,7 @@ const postSlice = createSlice({
 
         postEdited(state, action) {
             const { postId, title, body} = action.payload
-            const existingPost = state.posts.find(post => post.id === postId)
+            const existingPost = state.entities[postId]
             if(existingPost) {
                 existingPost.title = title
                 existingPost.body = body
@@ -100,7 +110,7 @@ const postSlice = createSlice({
                 }
                 return post
             })
-            state.posts = state.posts.concat(loadedPosts)
+            postAdapter.upsertMany(state, loadedPosts) // upsertMany - the word upsert is a combination of two words update and insert. 
         })
         builder.addCase(fetchPosts.rejected, (state, action) => {
             state.status = 'failed'
@@ -117,15 +127,24 @@ const postSlice = createSlice({
                 rocket: 0,
                 coffee: 0
             }
-            state.posts.push(action.payload)
+            postAdapter.addOne(state, action.payload)
         })
     }
 })
 
-export const selectAllPosts = (state) => state.posts.posts
+// getSelectors creates these selctors and we rename them with aliases using destructuring.
+
+export const {
+    selectAll: selectAllPosts,
+    selectById: selectPostById,
+    selectIds: selectPostIds
+    // selectAllPosts and selectPostById are the aliases here. 
+    // so that they run effectively with our predefined code.
+    //pass in a selector that returns the posts slice of state
+} = postAdapter.getSelectors(state => state.posts)
+
 export const getPostsStatus = (state) => state.posts.status
 export const getPostsError = (state) => state.posts.error
-export const selectPostById = (state, postId) => state.posts.posts.find(post => post.id === postId)
 
 export const selectPostByUser = createSelector(
     [selectAllPosts, (state, userId) => userId],
